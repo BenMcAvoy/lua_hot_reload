@@ -1,5 +1,5 @@
 set_project("lua_hot_reload")
-set_version("0.1.1")
+set_version("0.1.2")
 set_languages("c++20")
 set_toolchains("clang-cl")
 
@@ -8,7 +8,7 @@ target("lua_hot_reload")
     local sdk_root = os.getenv("LUA_HOT_RELOAD_SDK_ROOT") or "../scrap_mechanic_sdk"
     local rivet_root = os.getenv("LUA_HOT_RELOAD_RIVET_ROOT") or "../rivet"
     local target_dir = os.getenv("LUA_HOT_RELOAD_TARGET_DIR")
-        or (rivet_root .. "/Mods/BenMcAvoy-Lua_Hot_Reload-0.1.1")
+        or (rivet_root .. "/Mods/BenMcAvoy-Lua_Hot_Reload-0.1.2")
 
     set_targetdir(target_dir)
     add_files("src/main.cpp", "src/shell_notifications.cpp", "src/notification_text.cpp", "src/source_service.cpp", "src/source_paths.cpp")

@@ -1,9 +1,9 @@
 {
     "name": "Lua_Hot_Reload",
-    "version_number": "0.1.1",
+    "version_number": "0.1.2",
     "website_url": "https://github.com/BenMcAvoy/lua_hot_reload",
     "description": "Hot reloads Scrap Mechanic Lua source files through the game's native reload path.",
     "dependencies": [
-        "BenMcAvoy-ScrapMechanicSDK-0.1.0"
+        "BenMcAvoy-ScrapMechanicSDK-0.1.1"
     ]
 }
