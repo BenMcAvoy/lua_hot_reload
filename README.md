@@ -19,8 +19,17 @@ can install it automatically.
 
 ## Installation
 
-Install both Thunderstore packages through Rivet, or place both package
-directories in Rivet's configured Mods directory:
+The recommended installation method is [r2modman for Scrap
+Mechanic](https://thunderstore.io/c/scrap-mechanic/p/ebkr/r2modman/). Create or
+select a Scrap Mechanic profile, then install Lua Hot Reload from the
+Thunderstore package list. r2modman installs Rivet, the SDK, and the required
+dependencies into the profile for you.
+
+You do not need to copy files into the Scrap Mechanic installation directory.
+For users who need to load the DLL outside r2modman, see [Manual
+loading](#manual-loading) below.
+
+The packages are kept together in the profile managed by r2modman:
 
 ```text
 Mods/
@@ -41,7 +50,8 @@ The hot-reload DLL can also be loaded directly with an injector or with
 `lua_hot_reload.dll` links against `scrap_mechanic_sdk.dll` and cannot start on
 its own.
 
-Put both DLLs in the same directory before loading the hot-reload DLL:
+For manual loading, keep both DLLs in a staging directory outside the Scrap
+Mechanic installation directory before loading the hot-reload DLL:
 
 ```text
 manual-load/
@@ -65,8 +75,8 @@ mod entrypoint.
 The manual loading order is therefore:
 
 1. Start Scrap Mechanic and wait until its process is available.
-2. Load `scrap_mechanic_sdk.dll`.
-3. Load `lua_hot_reload.dll`.
+2. Load `scrap_mechanic_sdk.dll` from the staging directory.
+3. Load `lua_hot_reload.dll` from the staging directory.
 4. Wait for the game world to finish loading before editing Lua files.
 
 Do not unload either DLL by force while the game is running. The hot-reload DLL
