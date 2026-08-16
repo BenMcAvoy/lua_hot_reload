@@ -40,8 +40,8 @@ jobs:
 
       - name: Build SDK dependency
         shell: pwsh
-        working-directory: sdk
         run: |
+          Set-Location sdk
           xmake f -y -p windows -a x64 -m release
           xmake b -r -y scrap_mechanic_sdk
 
