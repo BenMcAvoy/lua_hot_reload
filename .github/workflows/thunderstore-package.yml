@@ -41,9 +41,8 @@ jobs:
       - name: Build SDK dependency
         shell: pwsh
         run: |
-          Set-Location sdk
-          xmake f -y -p windows -a x64 -m release
-          xmake b -r -y scrap_mechanic_sdk
+          xmake -P sdk f -y -p windows -a x64 -m release
+          xmake -P sdk b -r -y scrap_mechanic_sdk
 
       - name: Build release DLL
         shell: pwsh
