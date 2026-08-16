@@ -38,6 +38,13 @@ jobs:
       - name: Set up xmake
         uses: xmake-io/github-action-setup-xmake@v1
 
+      - name: Build SDK dependency
+        shell: pwsh
+        working-directory: sdk
+        run: |
+          xmake f -y -p windows -a x64 -m release
+          xmake b -r -y scrap_mechanic_sdk
+
       - name: Build release DLL
         shell: pwsh
         env:
