@@ -34,6 +34,46 @@ Start Scrap Mechanic normally through Rivet. The mod starts after Rivet loads
 the DLL and installs the native hooks. No separate launcher or command-line
 flag is required for normal use.
 
+## Manual loading
+
+The hot-reload DLL can also be loaded directly with an injector or with
+`LoadLibraryW`. The Scrap Mechanic SDK must be loadable first because
+`lua_hot_reload.dll` links against `scrap_mechanic_sdk.dll` and cannot start on
+its own.
+
+Put both DLLs in the same directory before loading the hot-reload DLL:
+
+```text
+manual-load/
+├── scrap_mechanic_sdk.dll
+└── lua_hot_reload.dll
+```
+
+Use matching x64 release builds. If the injector uses an absolute DLL path,
+Windows will normally search the directory containing that DLL for its native
+dependency. An injector that changes the DLL search path should add the
+directory containing both files before calling `LoadLibraryW`. Code that uses
+`LoadLibraryExW` should use `LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR` with the full
+path to `lua_hot_reload.dll`.
+
+Load `scrap_mechanic_sdk.dll` first when the injector controls the order, then
+load `lua_hot_reload.dll`. Loading the hot-reload DLL directly also starts its
+fallback bootstrap from `DllMain`, outside the loader lock. If Rivet is already
+running, the fallback detects Rivet and leaves startup to Rivet's registered
+mod entrypoint.
+
+The manual loading order is therefore:
+
+1. Start Scrap Mechanic and wait until its process is available.
+2. Load `scrap_mechanic_sdk.dll`.
+3. Load `lua_hot_reload.dll`.
+4. Wait for the game world to finish loading before editing Lua files.
+
+Do not unload either DLL by force while the game is running. The hot-reload DLL
+exports `LuaHotReload_Unload` for injectors that support clean unloading. Call
+that export first, wait for it to return, and only then unload the SDK if no
+other mod is using it.
+
 ## How it works
 
 The file watcher uses Windows directory change notifications. It does not poll
