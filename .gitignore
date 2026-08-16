@@ -6,3 +6,4 @@ build/
 *.exp
 *.lib
 *.dll
+artifacts/

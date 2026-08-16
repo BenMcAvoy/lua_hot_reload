@@ -1,0 +1,59 @@
+name: Build Thunderstore package
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out hot-reload source
+        uses: actions/checkout@v4
+
+      - name: Check out SDK dependency
+        uses: actions/checkout@v4
+        with:
+          repository: BenMcAvoy/scrap_mechanic_sdk
+          path: sdk
+          submodules: recursive
+          # SDK_REPO_PAT needs read access to the private SDK repository.
+          token: ${{ secrets.SDK_REPO_PAT || github.token }}
+
+      - name: Check out Rivet headers
+        uses: actions/checkout@v4
+        with:
+          repository: ReDoIngMods/rivet
+          path: rivet
+          sparse-checkout: src/Lib/include
+
+      - name: Set up xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+
+      - name: Build release DLL
+        shell: pwsh
+        env:
+          LUA_HOT_RELOAD_SDK_ROOT: sdk
+          LUA_HOT_RELOAD_RIVET_ROOT: rivet
+          LUA_HOT_RELOAD_TARGET_DIR: build/windows/x64/release
+        run: |
+          xmake f -y -p windows -a x64 -m release
+          xmake b -r -y lua_hot_reload
+
+      - name: Build Thunderstore zip
+        run: python scripts/package_thunderstore.py
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lua-Hot-Reload-${{ github.sha }}
+          path: artifacts/Lua_Hot_Reload-*.zip
+          if-no-files-found: error
