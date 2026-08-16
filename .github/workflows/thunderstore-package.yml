@@ -41,9 +41,9 @@ jobs:
       - name: Build SDK dependency
         shell: pwsh
         run: |
-          xmake -P sdk -y require minhook "zydis 4.1.1"
-          xmake -P sdk f -y -p windows -a x64 -m release
-          xmake -P sdk b -r -y scrap_mechanic_sdk
+          xmake require -P sdk -y minhook "zydis 4.1.1"
+          xmake f -P sdk -y -p windows -a x64 -m release
+          xmake b -P sdk -r -y scrap_mechanic_sdk
 
       - name: Build release DLL
         shell: pwsh
