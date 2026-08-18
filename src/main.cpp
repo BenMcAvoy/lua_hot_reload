@@ -2,10 +2,12 @@
 #include <tlhelp32.h>
 
 #include <atomic>
+#include <string_view>
 
 #include <rivet/modding.h>
 
 #include "scrap_mechanic_sdk/scrap_mechanic_sdk.hpp"
+#include "notification_text.hpp"
 #include "shell_notifications.hpp"
 #include "source_service.hpp"
 
@@ -17,12 +19,20 @@ scrap::sdk::Interceptor<scrap::sdk::lua::NativeSourceReloaded>::Connection g_rel
 
 void report_reload(const scrap::sdk::lua::NativeSourceReloaded &reload) {
     if (!reload.source_reload_succeeded) {
-        scrap::sdk::game::console::write("Lua hot reload failed");
+        scrap::sdk::game::console::write("Lua hot reload failed: " +
+                                         scrap::hot_reload::notification_text::narrow(reload.physical_path));
         return;
     }
 
-    scrap::sdk::game::console::write("Lua hot reload complete");
+    scrap::sdk::game::console::write("Lua hot reload complete: " +
+                                     scrap::hot_reload::notification_text::narrow(reload.physical_path));
     scrap::hot_reload::shell_notifications::notify_reloaded(reload.physical_path);
+}
+
+bool has_reload_notification_flag() {
+    constexpr std::wstring_view flag = L"--enable-reload-notifications";
+    const wchar_t *command_line = GetCommandLineW();
+    return command_line && std::wstring_view(command_line).find(flag) != std::wstring_view::npos;
 }
 
 DWORD WINAPI bootstrap(void *) {
@@ -42,7 +52,7 @@ DWORD WINAPI bootstrap(void *) {
     const bool watcher_started = hooks_installed && scrap::hot_reload::source_service::start(game);
     if (watcher_started) {
         g_reload_connection = scrap::sdk::lua::interceptors().source_reloaded.subscribe(report_reload);
-        (void)scrap::hot_reload::shell_notifications::start();
+        (void)scrap::hot_reload::shell_notifications::start(has_reload_notification_flag());
     } else {
         if (hooks_installed)
             scrap::sdk::lua::hooks::remove();

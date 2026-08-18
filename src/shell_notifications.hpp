@@ -4,7 +4,7 @@
 
 namespace scrap::hot_reload::shell_notifications {
 
-[[nodiscard]] bool start() noexcept;
+[[nodiscard]] bool start(bool enabled) noexcept;
 void stop() noexcept;
 void notify_reloaded(const std::wstring &path) noexcept;
 

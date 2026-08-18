@@ -40,6 +40,7 @@ namespace {
     HICON g_icon{};
     bool g_owns_icon{};
     bool g_toast_ready{};
+    std::atomic_bool g_enabled{};
     std::mutex g_mutex;
     std::wstring g_path;
     std::wstring g_game_path;
@@ -386,7 +387,12 @@ namespace {
 
 } // namespace
 
-bool start() noexcept {
+bool start(const bool enabled) noexcept {
+    g_enabled.store(enabled, std::memory_order_release);
+    if (!enabled) {
+        diagnostic_log("Windows reload notifications disabled by command line");
+        return true;
+    }
     if (g_thread)
         return true;
     g_ready_event = CreateEventW(nullptr, TRUE, FALSE, nullptr);
@@ -409,6 +415,7 @@ bool start() noexcept {
 }
 
 void stop() noexcept {
+    g_enabled.store(false, std::memory_order_release);
     HWND window{};
     {
         std::lock_guard lock(g_mutex);
@@ -430,6 +437,8 @@ void stop() noexcept {
 }
 
 void notify_reloaded(const std::wstring &path) noexcept {
+    if (!g_enabled.load(std::memory_order_acquire))
+        return;
     if (path.empty()) {
         diagnostic_log("notify_reloaded ignored empty path");
         return;

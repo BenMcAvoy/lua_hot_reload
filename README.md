@@ -35,7 +35,7 @@ The packages are kept together in the profile managed by r2modman:
 Mods/
 ├── BenMcAvoy-ScrapMechanicSDK-0.1.3/
 │   └── scrap_mechanic_sdk.dll
-└── BenMcAvoy-Lua_Hot_Reload-0.1.4/
+└── BenMcAvoy-Lua_Hot_Reload-0.1.5/
     └── lua_hot_reload.dll
 ```
 
@@ -103,10 +103,18 @@ environments, and dependency handling remain in control.
 
 ## Notifications
 
-After a successful reload, Windows displays a notification containing the
-changed file path. The notification has an `Open in VS Code` button when VS
-Code is installed. If Windows toast delivery is unavailable, the mod uses a
-legacy shell notification instead.
+Every completed reload is written to the game's console with the changed file
+path. Windows notifications are disabled by default. To enable the toast and
+legacy fallback notifications, add this argument to Scrap Mechanic's launch
+options:
+
+```text
+--enable-reload-notifications
+```
+
+When enabled, the Windows notification contains the changed file path and an
+`Open in VS Code` button when VS Code is installed. If Windows toast delivery
+is unavailable, the mod uses a legacy shell notification instead.
 
 ## Building
 
