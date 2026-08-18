@@ -33,9 +33,9 @@ The packages are kept together in the profile managed by r2modman:
 
 ```text
 Mods/
-├── BenMcAvoy-ScrapMechanicSDK-0.1.1/
+├── BenMcAvoy-ScrapMechanicSDK-0.1.2/
 │   └── scrap_mechanic_sdk.dll
-└── BenMcAvoy-Lua_Hot_Reload-0.1.2/
+└── BenMcAvoy-Lua_Hot_Reload-0.1.3/
     └── lua_hot_reload.dll
 ```
 
