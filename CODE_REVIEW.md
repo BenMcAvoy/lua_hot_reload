@@ -8,7 +8,7 @@ The canonical active target is now the Rivet mod `lua_hot_reload`.
 Historical versioned targets were removed from the active xmake project; the
 older entries below remain as historical test records only.
 
-## Readability refactor — 2026-08-13
+## Readability refactor - 2026-08-13
 
 The active code now has explicit policy boundaries. Source-root discovery and
 watching are separate, notification text conversion is isolated from Win32 and
